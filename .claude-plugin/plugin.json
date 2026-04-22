@@ -1,0 +1,9 @@
+{
+  "name": "linuxdo-links",
+  "version": "0.1.0",
+  "description": "LINUX DO 链接搜索与访问辅助：搜索公开链接、检测链接是否被 Cloudflare 挡住",
+  "author": { "name": "myartings" },
+  "repository": "https://github.com/myartings/linuxdoSkill",
+  "license": "MIT",
+  "keywords": ["linux.do", "LINUX DO", "forum", "search", "links"]
+}
