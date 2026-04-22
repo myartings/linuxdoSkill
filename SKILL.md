@@ -7,10 +7,12 @@ description: |
 
 # 目标
 
-只做两类事：
+只做四类事：
 
 1. 搜索 `linux.do` 公开页面链接
-2. 打开并整理公开可见的 `linux.do` 页面内容
+2. 解析 `linux.do` 链接结构，例如 topic id、楼层号、分类、用户名
+3. 在当前环境里判断某个链接能否直接访问
+4. 当浏览器已经拿到页面 HTML 时，提取结构化标题、分类、作者、时间和楼层内容
 
 不要帮用户生成任何打算发布到 `linux.do` 的帖子、回复、评论、私信或个人资料内容。
 `linux.do` 首页公开声明禁止 AI 生成站内发布内容，遇到这类请求必须拒绝，并引导用户阅读：`https://linux.do/guidelines`
@@ -34,6 +36,19 @@ python3 <SKILL_DIR>/scripts/search_linuxdo.py "关键词"
 python3 <SKILL_DIR>/scripts/check_linuxdo_url.py "https://linux.do/t/topic/1588286/5"
 ```
 
+4. 如果需要解析链接本身，用：
+
+```bash
+python3 <SKILL_DIR>/scripts/parse_linuxdo_url.py "https://linux.do/t/topic/1588286/5" --pretty
+```
+
+5. 如果浏览器能力已经成功打开页面，并且可以拿到 HTML 源码或保存后的 HTML 文件，用：
+
+```bash
+python3 <SKILL_DIR>/scripts/extract_linuxdo_structured.py /path/to/page.html --pretty
+python3 <SKILL_DIR>/scripts/extract_linuxdo_structured.py /path/to/page.html --post-number 5 --pretty
+```
+
 # 工作规则
 
 1. 搜索结果优先保留 `https://linux.do/` 下的真实目标链接，不返回搜索引擎跳转链接。
@@ -54,6 +69,14 @@ python3 <SKILL_DIR>/scripts/check_linuxdo_url.py "https://linux.do/t/topic/15882
    - 明确说明“当前是程序化访问受限，不代表该页面不存在”
    - 把下一步切换为浏览器访问该公开链接
 7. 如果用户只是要“验证链接能不能访问”，优先返回检查结论，不要虚构正文摘要。
+8. 如果用户给的是像 `/t/topic/1588286/5` 这种链接，优先解析出：
+   - `topic_id`
+   - `post_number`
+   - `page`（如果 query 里带了 `?page=`）
+9. 如果浏览器已经成功打开页面，不要手工总结整页；优先把页面 HTML 交给 `extract_linuxdo_structured.py` 产出结构化结果。
+10. 当用户要“第几楼内容”时：
+   - 先从链接里解析 `post_number`
+   - 再用 HTML 提取脚本的 `--post-number` 过滤出对应楼层
 
 # 常用流程
 
@@ -72,19 +95,47 @@ python3 <SKILL_DIR>/scripts/check_linuxdo_url.py "<链接>"
 ```
 
 2. 如果结果是 `ok`：
-   - 再继续访问页面并提取标题、分类、时间、核心内容
+   - 先运行 `parse_linuxdo_url.py` 解析链接结构
+   - 再访问页面并提取标题、分类、时间、核心内容
 3. 如果结果是 `cloudflare_challenge`：
    - 不再重复直连抓取
    - 改用浏览器能力打开同一个公开链接
+   - 浏览器能拿到 HTML 后，运行 `extract_linuxdo_structured.py`
 4. 如果结果是其他失败：
    - 说明错误状态码或网络错误
    - 不编造页面内容
+
+## 提取指定楼层
+
+1. 解析链接：
+
+```bash
+python3 <SKILL_DIR>/scripts/parse_linuxdo_url.py "https://linux.do/t/topic/1588286/5" --pretty
+```
+
+2. 如果能拿到页面 HTML：
+
+```bash
+python3 <SKILL_DIR>/scripts/extract_linuxdo_structured.py /path/to/page.html --post-number 5 --pretty
+```
+
+3. 输出里至少给出：
+   - 标题
+   - 分类
+   - `topic_id`
+   - `post_number`
+   - 作者
+   - 时间
+   - 楼层正文
 
 # 示例
 
 ```bash
 python3 <SKILL_DIR>/scripts/search_linuxdo.py "OpenAI codex"
+python3 <SKILL_DIR>/scripts/search_linuxdo.py "OpenAI codex" --json
 python3 <SKILL_DIR>/scripts/search_linuxdo.py "邀请码"
 python3 <SKILL_DIR>/scripts/search_linuxdo.py "site:linux.do Claude"
 python3 <SKILL_DIR>/scripts/check_linuxdo_url.py "https://linux.do/t/topic/1588286/5"
+python3 <SKILL_DIR>/scripts/parse_linuxdo_url.py "https://linux.do/t/topic/1588286/5" --pretty
+python3 <SKILL_DIR>/scripts/extract_linuxdo_structured.py /path/to/page.html --post-number 5 --pretty
 ```
