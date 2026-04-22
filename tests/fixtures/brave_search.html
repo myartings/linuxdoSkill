@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>linux.do OpenAI - Brave Search</title></head>
+<body>
+<!-- Typical Brave search result: URL appears in href (stops at closing quote) -->
+<div class="result">
+  <a href="https://linux.do/t/topic/1234567/1" class="result-header">Linux.do OpenAI 讨论帖</a>
+  <p>一篇关于 OpenAI 的讨论 https://linux.do/t/topic/1234567/1 内容摘要...</p>
+</div>
+
+<div class="result">
+  <a href="https://linux.do/t/topic/9999999/3">另一个主题帖</a>
+</div>
+
+<!-- Category link - lower priority than /t/ -->
+<div class="result">
+  <a href="https://linux.do/c/develop/42">开发分类</a>
+</div>
+
+<!-- Tag link -->
+<div class="result">
+  <a href="https://linux.do/tag/resource">资源标签</a>
+</div>
+
+<!-- User profile link -->
+<div class="result">
+  <a href="https://linux.do/u/alice">用户主页</a>
+</div>
+
+<!-- Duplicate: same URL appears twice, should only appear once in results -->
+<div class="result">
+  <a href="https://linux.do/t/topic/1234567/1">同一帖子的重复链接</a>
+</div>
+
+<!-- Homepage: should be ignored -->
+<a href="https://linux.do/">LINUX DO 首页</a>
+
+<!-- Ignored URL (guidelines) -->
+<a href="https://linux.do/guidelines?tl=en">社区准则</a>
+
+<!-- Percent-encoded URL: normalize_url should decode it -->
+<a href="https://linux.do/t/topic/%E6%B5%8B%E8%AF%95/5">中文 topic</a>
+
+<!-- Non-linux.do URL: should not appear in results -->
+<a href="https://example.com/not-linux-do">外部链接</a>
+
+<!-- URL with trailing junk (simulates raw regex match from JSON blob) -->
+<script>
+var data = {"url":"https://linux.do/t/topic/8888888","title":"some topic"};
+</script>
+</body>
+</html>

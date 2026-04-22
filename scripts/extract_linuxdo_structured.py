@@ -119,11 +119,13 @@ def extract_posts(html_text: str) -> list[dict[str, object]]:
 
 
 def detect_challenge(html_text: str) -> bool:
+    # Only match markers unique to the CF interstitial page itself.
+    # "challenge-platform" and "cf-challenge" appear on normal linux.do pages
+    # too (injected by CF into all responses), so they must not be used here.
     markers = (
         "Enable JavaScript and cookies to continue",
         "Just a moment...",
-        "cf-challenge",
-        "challenge-platform",
+        "请稍候…",
     )
     return any(marker in html_text for marker in markers)
 

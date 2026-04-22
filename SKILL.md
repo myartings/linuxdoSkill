@@ -30,7 +30,20 @@ python3 <SKILL_DIR>/scripts/search_linuxdo.py "关键词"
 
 `SKILL_DIR` 为当前 skill 的目录。
 
-3. 当用户直接给了一个 `linux.do` 链接，先做一次可访问性检查：
+3. **当用户要读取 `linux.do` 帖子正文时，直接用 `fetch_linuxdo_content.py`**，它会自动启动无头浏览器绕过 Cloudflare，不需要用户手动操作：
+
+```bash
+python3 <SKILL_DIR>/scripts/fetch_linuxdo_content.py "https://linux.do/t/topic/1588286" --pretty
+python3 <SKILL_DIR>/scripts/fetch_linuxdo_content.py "https://linux.do/t/topic/1588286/5" --post-number 5 --pretty
+```
+
+依赖（首次使用时安装一次）：
+```bash
+pip install playwright playwright-stealth
+```
+系统需要 `/usr/bin/chromium`，可通过环境变量 `CHROMIUM_PATH` 覆盖。
+
+4. 当用户直接给了一个 `linux.do` 链接，先做一次可访问性检查：
 
 ```bash
 python3 <SKILL_DIR>/scripts/check_linuxdo_url.py "https://linux.do/t/topic/1588286/5"

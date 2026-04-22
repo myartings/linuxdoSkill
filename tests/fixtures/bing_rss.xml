@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Bing: site:linux.do OpenAI</title>
+    <item>
+      <title>Linux.do OpenAI 帖子</title>
+      <link>https://linux.do/t/topic/9876543/2</link>
+    </item>
+    <item>
+      <title>另一个帖子</title>
+      <link>https://linux.do/t/topic/1111111</link>
+    </item>
+    <!-- User profile - lower priority than /t/ -->
+    <item>
+      <title>用户主页</title>
+      <link>https://linux.do/u/bob</link>
+    </item>
+    <!-- Category -->
+    <item>
+      <title>分类页</title>
+      <link>https://linux.do/c/feedback/5</link>
+    </item>
+    <!-- Homepage: should be ignored -->
+    <item>
+      <title>首页</title>
+      <link>https://linux.do/</link>
+    </item>
+    <!-- Non-linux.do link: should be filtered -->
+    <item>
+      <title>外部站点</title>
+      <link>https://example.com/some/page</link>
+    </item>
+    <!-- Duplicate: same as first item -->
+    <item>
+      <title>重复帖子</title>
+      <link>https://linux.do/t/topic/9876543/2</link>
+    </item>
+  </channel>
+</rss>
